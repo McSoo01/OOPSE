@@ -84,21 +84,21 @@ class LicensePlateRecognitionSystem:
 
                 for out in output:
                     text_bbox, text, text_score = out #so from the left - text position in the image, text recognised, calue that tells us how sure the easyocr is
-                    if text_score > 0.4: #used to 
-                        print(text, text_score)
+                    if text_score > 0.4: #if the value of the sureness is lower than 0.4 we do not show the recognised text, used so we do not get a reading of the additional text present on the license plates
+                        print(text, text_score) #for testing we do not need the information about the position of the recognised text
 
-                        # Compare with known license plates
+                        # Compare with known license plates (if we have a match between text recognised and known license plate we open tha gate)
                         if text in self.known_license_plates:
                             self.gate = 1
                             print(f"Match found: {text}. Gate set to {self.gate}")
 
-                self.display_images(img, license_plate, license_plate_gray, license_plate_thresh)
+                self.display_images(img, license_plate, license_plate_gray, license_plate_thresh) #shows all of the phases of proccessing the image
 
         print(f"Gate status: {self.gate}")
-        if self.gate == 0:
+        if self.gate == 0: #if we do not have a match we need to put in a PIN to open the gate
             self.enter_pin()
 
-    def extract_bboxes(self, detections, W, H):
+    def extract_bboxes(self, detections, W, H): #taken from the detection system
         bboxes = []
         class_ids = []
         scores = []
@@ -118,7 +118,7 @@ class LicensePlateRecognitionSystem:
 
         return bboxes, class_ids, scores
 
-    def display_images(self, img, license_plate, license_plate_gray, license_plate_thresh):
+    def display_images(self, img, license_plate, license_plate_gray, license_plate_thresh): #plotting the phases of image proccessing
         plt.figure()
         plt.imshow(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
 
